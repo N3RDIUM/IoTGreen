@@ -9,5 +9,12 @@ mpu = accel(i2c)
 frm = 0
 
 while True:
-    print(mpu.get_values()
+    _ = mpu.get_values()
+    misaligned = 0
+    if not _['GyY'] in range(-100, 400):
+        misaligned += 1
+    if not _['GyX'] in range(-600, 400):
+        misaligned += 1
+    if misaligned > 1:
+        print(frm)
     frm += 1
