@@ -44,7 +44,7 @@ print(last_drink)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind(('', 80))
 s.listen(5)
-s.settimeout(0.2)
+s.settimeout(0.02)
 
 def handle_connections():
     conn, addr = s.accept()
@@ -69,9 +69,9 @@ while True:
         last_drink = time.time()
         save_data(last_drink)
         last_drink = retrieve_data()
+        print(last_drink)
     if time.time() - last_drink > threshold:
         alert()
-        
     try:
         handle_connections()
     except OSError: # timeout
