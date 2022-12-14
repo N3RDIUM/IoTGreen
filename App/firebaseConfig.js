@@ -18,4 +18,5 @@ const db = rtdb.getDatabase(app);
 export default {
     app: app,
     db: db,
+    rtdb: rtdb
 }
