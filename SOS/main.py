@@ -10,6 +10,9 @@ import upip
 import gc
 import time
 
+_chars = ["\\", "|", "/", "-"]
+_idx = 0
+
 # ESP32 Pin assignment 
 i2c = SoftI2C(scl=Pin(32), sda=Pin(33))
 
@@ -115,7 +118,11 @@ while True:
         oled.text(timestamp, 0, 20)
         oled.text(date, 0, 30)
         oled.text(t, 0, 40)
-        oled.text("GPS Debug: " + str(_data["satellites_in_view"]) + " " + str(_data["satellites_in_use"]), 0, 50)
+        _idx += 1
+        if _idx >= len(_chars):
+            _idx = 0
+        _ = _chars[_idx]
+        oled.text(f"GPS Debug{_} " + str(_data["satellites_in_view"]) + " " + str(_data["satellites_in_use"]), 0, 50)
         
         oled.show()
         
