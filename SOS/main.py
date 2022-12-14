@@ -8,6 +8,23 @@ from details import ssid, password, projectId
 import network
 import upip
 import gc
+import time
+
+# ESP32 Pin assignment 
+i2c = SoftI2C(scl=Pin(32), sda=Pin(33))
+
+oled_width = 128
+oled_height = 64
+oled = SSD1306.SSD1306_I2C(oled_width, oled_height, i2c)
+
+oled.fill(0)
+oled.text("<boot>", 0, 40)
+oled.show()
+time.sleep(1)
+
+oled.fill(0)
+oled.text("<init comms>", 0, 40)
+oled.show()
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
@@ -18,18 +35,18 @@ if not wlan.isconnected():
         pass
 print('network config:', wlan.ifconfig())
 
+oled.fill(0)
+oled.text("<init firebase>", 0, 40)
+oled.show()
+time.sleep(0.1)
+
 import ufirebase as firebase
 firebase.setURL(f"https://{projectId}-default-rtdb.firebaseio.com/")
 
-# ESP32 Pin assignment 
-i2c = SoftI2C(scl=Pin(32), sda=Pin(33))
-
-# ESP8266 Pin assignment
-#i2c = SoftI2C(scl=Pin(5), sda=Pin(4))
-
-oled_width = 128
-oled_height = 64
-oled = SSD1306.SSD1306_I2C(oled_width, oled_height, i2c)
+oled.fill(0)
+oled.text("<init pinout>", 0, 40)
+oled.show()
+time.sleep(0.1)
 
 gpsModule = UART(2, baudrate=9600, rx=16, tx=17)
 print(gpsModule)
@@ -42,6 +59,11 @@ buff = bytearray(255)
 TIMEOUT = False
 FIX_STATUS = False
 
+oled.fill(0)
+oled.text("<inti nmea>", 0, 40)
+oled.show()
+time.sleep(0.1)
+
 nmea = parser.MicropyGPS()
 _data = {
     "latitude": [0, 0.0, "N"],
@@ -52,6 +74,11 @@ _data = {
     "emergency": False
 }
 button = Pin(12, Pin.IN)
+
+oled.fill(0)
+oled.text("<init success>", 0, 40)
+oled.show()
+time.sleep(2)
 
 while True:
     while gpsModule.any():
