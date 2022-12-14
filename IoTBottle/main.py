@@ -58,8 +58,10 @@ while True:
     while gpsModule.any():
         data = str(gpsModule.readline())
         for char in data:
-            nmea.update(char)
-        print(data)
+            try:
+                nmea.update(char)
+            except:
+                pass
         oled.fill(0)
         
         timestamp = ""

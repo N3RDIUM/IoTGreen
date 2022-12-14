@@ -48,15 +48,20 @@ _data = {
     "longitude": [0, 0.0, "E"],
     "speed": [0.0, 0.0, 0.0],
     "satellites_in_use": 0,
-    "satellites_in_view": 0
+    "satellites_in_view": 0,
+    "emergency": False
 }
+button = Pin(12, Pin.IN)
 
 while True:
     while gpsModule.any():
-        data = str(gpsModule.readline())
-        for char in data:
-            nmea.update(char)
-        print(data)
+        try:
+            data = str(gpsModule.readline())
+            for char in data:
+                nmea.update(char)
+            print(data)
+        except IndexError:
+            pass
         oled.fill(0)
         
         timestamp = ""
@@ -70,11 +75,19 @@ while True:
             date += str(nmea.date[i])
             if not i == len(nmea.date)-1:
                 date += "/"
+                
+        if button.value() > 0.5:
+            _data["emergency"] = True
+            t = "<emergency>"
+        else:
+            _data["emergency"] = False
+            t = "<normal>"
         
         oled.text(str(_data["latitude"][0]+_data["latitude"][1]/100) + " " + str(_data["latitude"][2]), 0, 0)
         oled.text(str(_data["longitude"][0]+_data["longitude"][1]/100) + " " + str(_data["longitude"][2]), 0, 10)
         oled.text(timestamp, 0, 20)
         oled.text(date, 0, 30)
+        oled.text(t, 0, 40)
         oled.text("GPS Debug: " + str(_data["satellites_in_view"]) + " " + str(_data["satellites_in_use"]), 0, 50)
         
         oled.show()
