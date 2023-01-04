@@ -1,47 +1,39 @@
-
-/*
-  Ultrasonic Sensor HC-SR04 and Arduino Tutorial
-
-  by Dejan Nedelkovski,
-  www.HowToMechatronics.com
-
-*/
 // defines pins numbers
-const int trigPin = 2;
-const int echoPin = 3;
+#include <NewPing.h>
+const int trigPin = 9;
+const int echoPin = 8;
 int _ = 0;
-
 // defines variables
 long duration;
 int distance;
+NewPing sonar(trigPin, echoPin, 200);
 void setup() {
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
   Serial.begin(9600); // Starts the serial communication
 }
 void loop() {
-  // Clears the trigPin
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = pulseIn(echoPin, HIGH);
-  // Calculating the distance
-  distance = duration * 0.034 / 2;
-  // Prints the distance on the Serial Monitor
-  Serial.print("Distance: ");
-  Serial.println(distance);
+  delay(50);
 
-  if(distance > 20){
+  unsigned int uS = sonar.ping();
+
+  digitalWrite(echoPin,LOW);
+
+  pinMode(echoPin,INPUT);
+
+  Serial.print("Ping: ");
+
+  Serial.print(uS / US_ROUNDTRIP_CM);
+
+  Serial.println("cm");
+  distance = uS / US_ROUNDTRIP_CM;
+  if(distance > 6 or distance < 4){
     _++;
   } else {
     _=0;
   }
-
-  if(_>6){
+  
+  if(_>2){
     analogWrite(10, 128);
   } else {
     analogWrite(10, 0);
